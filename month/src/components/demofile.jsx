@@ -1,6 +1,6 @@
 import { Container, Form, Row, Col, Button } from 'react-bootstrap';
 import { useState } from 'react';
-
+import AXIOS from 'axios';
 export default function DemoUpload() {
   const [image, setImage] = useState({ preview: "", data: "" });
 
@@ -11,19 +11,31 @@ export default function DemoUpload() {
     };
     setImage(img);
   };
+  const handleSubmit = (e) => {
+    const formData = new FormData(); // Create a new instance of FormData
+    formData.append('file', image.data);
+    AXIOS.post('http://localhost:9000/uploadimg', formData, { headers: { 'Content-Type': 'multipart/form-data' } })
+    .then((res) => {
+      alert(res.data.msg);
+    })
+    .catch((error) => {
+      // Handle the error
+      console.error(error);
+    })
+  }
 
   return (
     <>
       <Container>
         <Row>
           <Col>
-            <Form>
+            <Form >
               <Form.Group>
                 <Form.Label>Upload photo</Form.Label>
                 <Form.Control type="file" name="file" required onChange={handleFile} />
               </Form.Group>
               <Form.Group>
-                <Button variant="primary">Submit</Button>
+                <Button required onClick={handleSubmit}variant="primary" >Submit</Button>
               </Form.Group>
             </Form>
           </Col>
