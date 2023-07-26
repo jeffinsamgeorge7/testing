@@ -56,7 +56,7 @@ export default function RegisterForm(){
                 <Form.Control type="password" name="pswd"   onChange={(e)=>{
                             setps(e.target.value)
 
-                    }} />
+                    }} /> 
               </Form.Group>
               <Form.Group>
                 <Form.Label>Upload photo</Form.Label>
