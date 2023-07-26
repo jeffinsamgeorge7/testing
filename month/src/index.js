@@ -4,14 +4,15 @@ import './index.css';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import Navbr from './components/navbr';
-import DemoUpload from './components/demofile';
+
+import RegisterForm from './components/register';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <Navbr/>
-    <DemoUpload/>
+    <RegisterForm/>
   </React.StrictMode>
 );
 
