@@ -10,6 +10,8 @@ export default function RegisterForm(){
     const formdata = new FormData();
 
     const handleFile = (e) => {
+      e.preventDefault()
+      
     const img = {
       preview: URL.createObjectURL(e.target.files[0]),
       data: e.target.files[0],
@@ -17,26 +19,27 @@ export default function RegisterForm(){
     setImage(img);
   };
 
-  const handleData = (e) => {
+  const handleData = (event) => {
+    event.preventDefault()
     formdata.append("fname",fn);
     formdata.append("email",eml);
     formdata.append("password",pswd);
     formdata.append('file', image.data);
-    AXIOS.post('http://localhost:9000/uploadform', formdata, { headers: { 'Content-Type': 'multipart/form-data' } })
+    AXIOS.post('http://localhost:9000/uploadform', formdata, { 'Content-Type': 'multipart/form-data' } )
     .then((res) => {
       alert(res.data.msg);
     })
     .catch((error) => {
       console.error(error);
     })
-  }
+  };
    return(
    <>
       <Container>
         <h1>Registeration  Form</h1>
         <Row>
           <Col>
-            <Form >
+            <Form   onSubmit={handleData} encType='multipart/form-data'>
             <Form.Group>
                 <Form.Label>Name</Form.Label>
                 <Form.Control type="text"
@@ -56,14 +59,14 @@ export default function RegisterForm(){
                 <Form.Control type="password" name="pswd"   onChange={(e)=>{
                             setps(e.target.value)
 
-                    }} /> 
+                    }} />
               </Form.Group>
               <Form.Group>
                 <Form.Label>Upload photo</Form.Label>
                 <Form.Control type="file" name="file"  required onChange={handleFile}/>
               </Form.Group>
               <Form.Group>
-                <Button variant="primary" onClick={()=>{handleData()}} >Submit</Button>
+                <Button  type="submit" variant="primary" >Submit</Button>
               </Form.Group>
             </Form>
           </Col>
