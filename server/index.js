@@ -125,6 +125,104 @@ api.post('/uploadimg', upload.single('file'), (req, res) => {
   
   });
 
+/*
+  api.put('/updateproduct/:id', upload1.single('file'), async (req, res) => {
+  const productId = req.params.id;
+   const { pname, disc, prodcategory, prodprice, stock } = req.body;
+  const url = req.file ? req.file.filename : undefined;
+
+  try {
+    const updatedFields = {
+      pname,
+      disc,
+      prodcategory,
+      prodprice,
+      stock,
+    };
+
+    if (url) {
+      updatedFields.fileurl = url;
+    }
+
+    // Find the product by ID and update it with the new fields
+    const updatedProduct = await prodModel.findByIdAndUpdate(
+      productId,
+      updatedFields,
+      { new: true }
+    );
+
+    res.json(updatedProduct);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to update product' });
+  }
+});
+*/
+
+
+// Delete a product
+api.delete('/deleteproduct/:id', async (req, res) => {
+  const productId = req.params.id;
+
+  try {
+    // Find the product by ID and remove it
+    await prodModel.findByIdAndRemove(productId);
+
+    res.json({ message: 'Product deleted successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to delete product' });
+  }
+});
+// Get product by id
+//get product by id
+api.get('/productbyid/:id', async (req, res) => {
+  const pid = req.params.id;
+  try {
+    const prod = await prodModel.findById(pid);
+    if (!prod) {
+      res.json(prod);
+      return res.status(404).json({ error: 'Product not found' });
+    }
+    res.json(prod);
+  } catch (error) {
+    console.error('Error retrieving product by ID:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Update product by id
+api.post('/updateprd/:id', upload.single('file'), async (req, res) => {
+  const idn = req.params.id;
+  const url = req.file ? req.file.filename : undefined;
+  const pname = req.body.pname;
+  const cat = req.body.cat;
+  const price = req.body.price;
+
+  try {
+    const updatedFields = {
+      pname,
+      prodcategory: cat, // Assuming you want to update the prodcategory field
+      prodprice: parseFloat(price), // Convert price to a number if needed
+    };
+
+    if (url) {
+      updatedFields.fileurl = url;
+    }
+
+    // Find the product by ID and update it with the new fields
+    const updatedProduct = await prodModel.findByIdAndUpdate(idn, updatedFields, { new: true });
+
+    if (!updatedProduct) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    res.json({ msg: 'Product updated successfully', product: updatedProduct });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'An error occurred while updating the product' });
+  }
+});
 
 //mongoose connection
 main().catch(err => console.log(err));

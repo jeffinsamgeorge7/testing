@@ -1,11 +1,12 @@
 
-import ProductList from "./productslist";
+import Navbr from "./navbr";
+
 
 export default function DefaultPage(){
     return(
         <>
-      
-        <ProductList/>
+       <Navbr/>
+        
         </>
     )
 }

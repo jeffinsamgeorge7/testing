@@ -1,11 +1,10 @@
 import { Container, Form, Row, Col, Button,Toast } from 'react-bootstrap';
 import { useState,useEffect } from 'react';
 import AXIOS from 'axios';
-
-import CategoryForm from './category';
 import Navbr from './navbr';
+import { useParams } from 'react-router-dom';
 
-export default function ProductsForm(){
+export default function ProductsForm(props){
     const [show, setShow] = useState(false);
     const [image, setImage] = useState({ preview: "", data: "" });
     const [pn,setpn]=useState("");
@@ -15,6 +14,7 @@ export default function ProductsForm(){
     const [price, setProductPrice] = useState('');
     const [stock, setProductStock] = useState('');
     const formdata = new FormData();
+    const { id = 'DefaultID' } = useParams();
 
     useEffect(() => {
         // Fetch categories from the backend when the component mounts
@@ -24,12 +24,32 @@ export default function ProductsForm(){
       const fetchCategories = () => {
         AXIOS.get('http://localhost:9000/catgetdata')
           .then((response) => {
+            
             setCategories(response.data);
           })
           .catch((error) => {
             console.error(error);
           });
       };
+
+    
+      useEffect(() => {
+        // Define the fetchProduct function inside the useEffect callback
+        const fetchProduct = () => {
+          AXIOS.get(`http://localhost:9000/productbyid${id}`)
+            .then((response) => {
+              const productData = response.data;
+            setpn(productData.pname);
+            })
+            .catch((error) => {
+              console.error(error);
+            });
+        };
+      
+        // Fetch product from the backend when the component mounts
+        fetchProduct();
+      }, [id]);
+      
 
     const handleFile = (e) => {
       e.preventDefault()
@@ -61,6 +81,9 @@ export default function ProductsForm(){
       console.error(error);
     })
   };
+ 
+  
+
     return(
         <>
         <Navbr/>
@@ -73,7 +96,7 @@ export default function ProductsForm(){
         <Toast.Body>New product added</Toast.Body>
       </Toast>
       <Container>
-        <h1>Product  Form</h1>
+        <h1>Update Product</h1>
         <Row>
           <Col>
             <Form   onSubmit={handleData} encType='multipart/form-data'>
@@ -81,6 +104,7 @@ export default function ProductsForm(){
                 <Form.Label>Name</Form.Label>
                 <Form.Control type="text"
                  name="pn"  
+                 value={pn}
                  onChange={(e)=>{
                             setpn(e.target.value)}}/>
               </Form.Group>
@@ -126,9 +150,6 @@ export default function ProductsForm(){
                 <Button  type="submit" variant="primary">Submit</Button>
               </Form.Group>
             </Form>
-          </Col>
-          <Col>
-          <CategoryForm/>
           </Col>
         </Row>
       </Container>
